@@ -30,12 +30,15 @@ class m190329_152901_create_user_table extends Migration
      */
     private static function seedDemo()
     {
-        $user = new User();
-        $user->username = 'demo';
-        $user->setPassword('demo_pass');
-        $user->generateAuthKey();
-        if (!$user->save()) {
-            throw new Exception();
+        $users_data = ['admin', 'demo'];
+        foreach ($users_data as $user_data) {
+            $user = new User();
+            $user->username = $user_data;
+            $user->setPassword($user_data);
+            $user->generateAuthKey();
+            if (!$user->save()) {
+                throw new Exception();
+            }
         }
     }
 
