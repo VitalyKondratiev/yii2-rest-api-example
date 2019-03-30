@@ -6,6 +6,7 @@ use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
 use yii\filters\auth\HttpBasicAuth;
+use app\models\Calculation;
 
 class TaskController extends Controller
 {
@@ -33,10 +34,22 @@ class TaskController extends Controller
 
     public function actionIndex()
     {
+        $user_id = \Yii::$app->user->getId();
         $number = \Yii::$app->request->post('number') ?: null;
         $data = \Yii::$app->request->post('data') ?: [];
         $split_point_index = self::getSplitPointIndex($number, $data);
+        $this->saveCalculation($user_id, $number, $data, $split_point_index);
         return $split_point_index;
+    }
+
+    private function saveCalculation($user_id, $number, $data, $split_point_index)
+    {
+        $calculation = new Calculation();
+        $calculation->user_id = $user_id;
+        $calculation->number = $number;
+        $calculation->data = $data;
+        $calculation->split_point_index = $split_point_index;
+        return $calculation->save();
     }
 
     /**

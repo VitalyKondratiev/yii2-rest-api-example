@@ -134,4 +134,9 @@ class User extends ActiveRecord  implements \yii\web\IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+
+    public function getCalculations()
+    {
+        return $this->hasMany(Calculation::className(), ['user_id' => 'id']);
+    }
 }
