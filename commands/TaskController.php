@@ -14,7 +14,7 @@ class TaskController extends Controller
     /**
     * @var int number for split rule.
     */
-    public $number = 0;
+    public $number = null;
     /**
     * @var array array for splitting.
     */

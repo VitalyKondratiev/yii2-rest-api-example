@@ -15,7 +15,7 @@ class m190330_081654_calculation extends Migration
         $this->createTable('{{%calculation}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer(),
-            'number' => $this->integer()->notNull(),
+            'number' => $this->integer(),
             'data' => $this->string()->notNull(),
             'split_point_index' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
