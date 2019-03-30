@@ -70,6 +70,19 @@ class User extends ActiveRecord  implements \yii\web\IdentityInterface
     }
 
     /**
+     * Finds user and check password
+     * 
+     * @param string $username
+     * @param string $password
+     * @return static|null
+     */
+    public static function findByCredentials($username, $password)
+    {
+        $user = static::findOne(['username' => $username]);
+        return ($user != null && $user->validatePassword($password)) ? $user : null;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getId()

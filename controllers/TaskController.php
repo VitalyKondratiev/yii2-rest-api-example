@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
+use yii\filters\auth\HttpBasicAuth;
 
 class TaskController extends Controller
 {
@@ -22,6 +23,10 @@ class TaskController extends Controller
             'formats' => [
                 'application/json' => Response::FORMAT_JSON
             ]
+        ];
+        $behaviors['authenticator'] = [
+            'class' => HttpBasicAuth::className(),
+            'auth' => '\app\models\User::findByCredentials',
         ];
         return $behaviors;
     }
