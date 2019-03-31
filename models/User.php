@@ -15,6 +15,7 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property string $password_hash
  * @property string $auth_key
+ * @property string $access_token
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -55,7 +56,7 @@ class User extends ActiveRecord  implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -103,7 +104,7 @@ class User extends ActiveRecord  implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->auth_key === $auth_key;
+        return $this->auth_key === $authKey;
     }
 
     /**
@@ -133,6 +134,12 @@ class User extends ActiveRecord  implements \yii\web\IdentityInterface
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->access_token = base64_encode("$this->username:$this->password_hash");
+        return parent::beforeSave($insert);
     }
 
     public function getCalculations()
