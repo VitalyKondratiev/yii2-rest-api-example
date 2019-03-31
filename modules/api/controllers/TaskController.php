@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\api\controllers;
 
 use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
@@ -13,6 +13,7 @@ class TaskController extends Controller
     protected function verbs(){
         return [
             'index' => ['POST'],
+            'list' => ['GET'],
         ];
     }
 
@@ -37,11 +38,22 @@ class TaskController extends Controller
         $user_id = \Yii::$app->user->getId();
         $number = \Yii::$app->request->post('number') ?: null;
         $data = \Yii::$app->request->post('data') ?: [];
-        $split_point_index = $this->makeCalculation($user_id, $number, $data, $split_point_index);
+        $split_point_index = $this->makeCalculation($user_id, $number, $data);
         return $split_point_index;
     }
 
-    private function makeCalculation($user_id, $number, $data, $split_point_index)
+    public function actionList()
+    {
+        $user_id = \Yii::$app->user->getId();
+        $calculations = Calculation::find()
+            ->select(['number', 'data', 'split_point_index', 'created_at'])
+            ->where(['user_id' => $user_id])
+            ->orderBy(['created_at' => SORT_ASC])
+            ->all();
+        return $calculations;
+    }
+
+    private function makeCalculation($user_id, $number, $data)
     {
         $calculation = new Calculation();
         $calculation->user_id = $user_id;
