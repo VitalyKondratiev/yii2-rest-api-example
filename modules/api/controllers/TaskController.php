@@ -38,8 +38,18 @@ class TaskController extends Controller
         $user_id = \Yii::$app->user->getId();
         $number = \Yii::$app->request->post('number') ?: null;
         $data = \Yii::$app->request->post('data') ?: [];
-        $split_point_index = $this->makeCalculation($user_id, $number, $data);
-        return $split_point_index;
+        $calculation = $this->getCalculation($user_id, $number, $data);
+        if (!$calculation->save()) {
+            $errors = implode(array_map('implode', $calculation->errors)); // combine from array to one string
+            $errors = strtolower(rtrim($errors, '.')); // trim last dot in the string and lowercase it
+            $errors = str_replace('.' , ', ', $errors); // trim last dot in the string and lowercase it
+            throw new \yii\web\HttpException(418, $errors);
+        }
+        else {
+            return [
+                'result' => $calculation->split_point_index,
+            ];
+        }
     }
 
     public function actionList()
@@ -53,12 +63,12 @@ class TaskController extends Controller
         return $calculations;
     }
 
-    private function makeCalculation($user_id, $number, $data)
+    private function getCalculation($user_id, $number, $data)
     {
         $calculation = new Calculation();
         $calculation->user_id = $user_id;
         $calculation->number = $number;
         $calculation->data = $data;
-        return $calculation->save() ? $calculation->split_point_index : null;
+        return $calculation;
     }
 }

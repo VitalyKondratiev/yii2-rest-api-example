@@ -48,7 +48,24 @@ Request body must contain JSON object with 2 fields:
 - `number` (integer) - number for splitting rule
 - `data` (array of integers) - array for splitting
 
-Response contains index of item before which must split array, or `-1` if splitting impossible.
+Sample JSON object in request:
+```json
+{
+  "number": 5,
+  "data": [5,5,1,7,2,3,5]
+}
+```
+
+Succesfully response contains index of item before which must split array, or `-1` if splitting impossible.  
+
+Sample JSON object in response: 
+```json
+{
+  "result": 4
+}
+```
+
+On fail you get standard HttpException object with errors list in 'message' property.
 
 ### /api/task/list
 It's method for view all of your requests, only GET request allowed.  
@@ -58,13 +75,15 @@ Response contains JSON array of objects, each object present you calculated earl
 
 ## Command-line tools
 You can run command `php yii task` with arguments:
-- `number`* - number for splitting rule
-- `data`* - comma separated digits string (e.g.: `5,5,7,1,32,5`)  
-- `uid` - user id from database, for bind calculation to the user 
+- _`number`_* - number for splitting rule (e.g.: `5`)  
+- _`data`_* - comma separated digits string (e.g.: `5,5,7,1,32,5`)  
+
+and options:
+- `uid` - user id from database, for bind calculation to the user (e.g.: `--uid=1`)
 
 Sample commands:  
-- `php yii task --number=5 --data=5,5,1,7,2,3,5` returns `4` to console, write data to DB, with `user_id` been set to `null`
-- `php yii task --number=5 --data=5,5,1,7,2,3,5 --uid=1` returns `4` to console, write data to DB, with `user_id` been set to `1` (`admin` user).
+- `php yii task 5 5,5,1,7,2,3,5` returns `4` to console, write data to DB, with `user_id` been set to `null`
+- `php yii task 5 5,5,1,7,2,3,5 --uid=1` returns `4` to console, write data to DB, with `user_id` been set to `1` (`admin` user).
 
 ## Testing
 For testing you can run this command:

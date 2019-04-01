@@ -34,7 +34,11 @@ class Calculation extends ActiveRecord
      */
     public function rules()
     {
-        return [];
+        return [
+            [['data', 'number'], 'required'],
+            ['number', 'integer'],
+            ['data', 'each', 'rule' => ['integer']],
+        ];
     }
 
     /**

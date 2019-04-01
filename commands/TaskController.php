@@ -4,6 +4,7 @@ namespace app\commands;
 
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\helpers\Console;
 use app\models\Calculation;
 
 /**
@@ -11,14 +12,6 @@ use app\models\Calculation;
  */
 class TaskController extends Controller
 {
-    /**
-    * @var int number for split rule.
-    */
-    public $number = null;
-    /**
-    * @var array array for splitting.
-    */
-    public $data = [];
     /**
     * @var int user id for relation.
     */
@@ -28,19 +21,29 @@ class TaskController extends Controller
      * This command echoes split point and save equation to database.
      * @return int Exit code
      */
-    public function actionIndex()
+    public function actionIndex($number, array $data)
     {
         $calculation = new Calculation();
         $calculation->user_id = $this->uid;
-        $calculation->number = $this->number;
-        $calculation->data = $this->data;
-        $calculation->save();
-        echo $calculation->split_point_index . "\n";
+        $calculation->number = $number;
+        $calculation->data = $data;
+        if ($calculation->save())
+        {
+            echo $calculation->split_point_index . "\n";
+        }
+        else
+        {
+            $this->stdout("Errors:\n", Console::FG_RED);
+            foreach($calculation->errors as $field => $errors)
+            {
+                $this->stdout("\t" . (implode("\n", $errors) . "\n"), Console::FG_RED);
+            }
+        }
         return ExitCode::OK;
     }
 
     public function options($actionID)
     {
-        return ['number', 'data', 'uid'];
+        return ['uid'];
     }
 }
