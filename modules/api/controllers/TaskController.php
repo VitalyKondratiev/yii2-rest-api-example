@@ -60,7 +60,10 @@ class TaskController extends Controller
             ->where(['user_id' => $user_id])
             ->orderBy(['created_at' => SORT_ASC])
             ->all();
-        return $calculations;
+        return [
+            'count' => count($calculations),
+            'list' => $calculations,
+        ];
     }
 
     private function getCalculation($user_id, $number, $data)

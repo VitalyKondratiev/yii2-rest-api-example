@@ -88,5 +88,19 @@ Sample commands:
 ## Testing
 For testing you can run this command:
 - `./vendor/bin/codecept run`
-You can specify this for run only unit tests (without functional):
-- `./vendor/bin/codecept run unit`
+You can specify this for run only unit tests (without functional and api):
+- `./vendor/bin/codecept run unit`  
+
+For API tests you must run web environment (`yii serve`, Docker with this project, OpenServer, or any...).  
+And change domain in `/tests/api.suite.yml` on your. In my case domain set to `localhost:8080`.
+Simply change domain (or verify it, if you have equal):
+```yml
+      - REST:
+          depends: PhpBrowser
+          url: http://localhost:8080/api
+```
+
+You can specify this for run only api tests (without functional and unit):
+- `./vendor/bin/codecept run api`
+
+API tests create Calculations data in real DB (not tests)
